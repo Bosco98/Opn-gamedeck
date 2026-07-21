@@ -1,19 +1,19 @@
 {
   "v": 1,
   "_docs": {
-    "url": "Absolute https URLs point at games hosted on their own origins (each game repo's GitHub Pages). Relative URLs ('platformer/') resolve against the console's own address for locally-served cartridges. Any page built with @opencontrol/sdk works — plug and play.",
+    "url": "Absolute https URLs point at games hosted on their own origins (each game repo's GitHub Pages). Relative URLs ('platformer/') resolve against the console's own address for locally-served cartridges. Any page built with @opencontrol/sdk works \u2014 plug and play.",
     "profile": "Must match the game's OpenControl.host({ controller }) option.",
     "note": "An HTTPS console can only embed HTTPS games (mixed content)."
   },
   "games": [
     {
       "id": "platformer",
-      "title": "Skyline Scramble",
-      "tagline": "Co-op platform mayhem",
+      "title": "Emberwick",
+      "tagline": "The last flame \u00b7 a story platformer",
       "cover": "covers/platformer.svg",
       "url": "https://bosco98.github.io/game-platformer/",
       "profile": "classic",
-      "maxPlayers": 8
+      "maxPlayers": 4
     },
     {
       "id": "racing",
