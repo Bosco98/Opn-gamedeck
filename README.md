@@ -56,9 +56,10 @@ while developing a game.
   **postMessage bridge** to the parent, and the console relays each phone into
   the game as a synthetic controller speaking the normal wire protocol —
   games can't tell the difference.
-- **Adding a game:** build any web game with `@opencontrol/sdk`, host it
+- **Adding a game:** build any web game with `@bosco98/opencontrol-sdk`, host it
   anywhere over HTTPS, add `{ id, title, cover, url, profile }` to
-  `games.json`. Done.
+  `games.json`. Done. Full walkthrough: [docs/BUILDING-A-GAME.md](docs/BUILDING-A-GAME.md)
+  (Claude Code users can invoke the `/opencontrol-game` skill).
 
 ## What the SDK gives you
 
