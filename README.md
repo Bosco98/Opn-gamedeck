@@ -2,6 +2,10 @@
 
 Turn any phone into a programmable controller for your web app.
 
+**🎮 Live demo (racing game):** https://bosco98.github.io/opencontrol/ — open it on a
+laptop, then scan the QR with your phone. Served over HTTPS by GitHub Pages, so tilt
+steering works with no local certificate setup.
+
 This repo is a plain multi-app layout (no workspace tooling):
 
 | Folder | What it is | How it consumes the SDK |
