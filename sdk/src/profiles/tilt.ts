@@ -378,18 +378,23 @@ function renderTilt(container: HTMLElement, ctx: RenderContext<TiltEvents>): () 
   if (typeof requestPermission === "function") {
     overlay.hidden = false;
     const enable = container.querySelector<HTMLElement>('[data-oc="enable"]')!;
-    enable.addEventListener("pointerdown", () => {
+    // iOS requires this call to run inside a real user activation. Use "click"
+    // (Apple's documented trigger) — pointerdown does not reliably count.
+    enable.addEventListener("click", () => {
       requestPermission()
         .then((state) => {
           if (state === "granted") {
             overlay.hidden = true;
             startSensor();
           } else {
-            permissionError.textContent = "Motion access denied — allow it in browser settings.";
+            permissionError.textContent = "Motion access denied — enable it in Settings › Apps › Safari › Motion & Orientation Access.";
           }
         })
-        .catch(() => {
-          permissionError.textContent = "Could not request motion access.";
+        .catch((err: unknown) => {
+          // Surface the real reason instead of a generic message. Most often
+          // this is Settings › Safari › Motion & Orientation Access turned off.
+          const detail = err instanceof Error ? `${err.name}: ${err.message}` : String(err);
+          permissionError.textContent = `Could not request motion access — ${detail}`;
         });
     }, { signal });
   } else {
