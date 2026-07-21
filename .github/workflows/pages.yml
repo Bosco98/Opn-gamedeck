@@ -1,0 +1,57 @@
+name: Deploy racing game to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment, skipping runs queued behind an in-progress one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Build @opencontrol/sdk and expose it via npm link, exactly like local dev.
+      - name: Build SDK
+        working-directory: sdk
+        run: |
+          npm ci
+          npm run build
+          npm link
+
+      # Build the React racing game against the linked SDK. base=/opencontrol/
+      # matches the project-pages subpath (https://<user>.github.io/opencontrol/).
+      - name: Build racing game
+        working-directory: game-racing
+        run: |
+          npm ci
+          npm link @opencontrol/sdk
+          npm run build -- --base=/opencontrol/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: game-racing/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
