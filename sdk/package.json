@@ -1,0 +1,42 @@
+{
+  "name": "@opencontrol/sdk",
+  "version": "0.1.0",
+  "description": "Turn any phone into a programmable controller for your web app. Sessions, controller profiles, device capabilities and networking — abstracted away.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "controller",
+    "gamepad",
+    "mobile",
+    "webrtc",
+    "multiplayer",
+    "phone-controller"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "peerjs": "^1.5.4"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.0"
+  }
+}
