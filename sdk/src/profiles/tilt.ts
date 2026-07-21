@@ -378,9 +378,11 @@ function renderTilt(container: HTMLElement, ctx: RenderContext<TiltEvents>): () 
   if (typeof requestPermission === "function") {
     overlay.hidden = false;
     const enable = container.querySelector<HTMLElement>('[data-oc="enable"]')!;
-    // iOS requires this call to run inside a real user activation. Use "click"
-    // (Apple's documented trigger) — pointerdown does not reliably count.
-    enable.addEventListener("click", () => {
+    // Use pointerdown, not click: the container's touch-guards call
+    // preventDefault() on touchstart/touchend (installTouchGuards), which
+    // suppresses the synthetic click on iOS. pointerdown still fires and
+    // counts as the user activation requestPermission() requires.
+    enable.addEventListener("pointerdown", () => {
       requestPermission()
         .then((state) => {
           if (state === "granted") {
