@@ -363,9 +363,16 @@ function renderTilt(container: HTMLElement, ctx: RenderContext<TiltEvents>): () 
   /* --- iOS motion permission flow --- */
   const overlay = container.querySelector<HTMLElement>('[data-oc="overlay"]')!;
   const permissionError = container.querySelector<HTMLElement>('[data-oc="perm-error"]')!;
-  const requestPermission =
+  // iOS exposes DeviceOrientationEvent.requestPermission as a static method that
+  // must run with DeviceOrientationEvent as its `this`. Bind it — calling a
+  // detached reference throws an illegal-invocation TypeError on WebKit.
+  const rawRequestPermission =
     typeof DeviceOrientationEvent !== "undefined"
       ? (DeviceOrientationEvent as unknown as PermissionCapableOrientationEvent).requestPermission
+      : undefined;
+  const requestPermission =
+    typeof rawRequestPermission === "function"
+      ? rawRequestPermission.bind(DeviceOrientationEvent)
       : undefined;
 
   if (typeof requestPermission === "function") {
