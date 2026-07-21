@@ -1,4 +1,4 @@
-name: Deploy racing game to GitHub Pages
+name: Deploy Opn-gamedeck to GitHub Pages
 
 on:
   push:
@@ -25,26 +25,25 @@ jobs:
         with:
           node-version: 20
 
-      # Build @opencontrol/sdk and expose it via npm link, exactly like local dev.
+      # The console consumes the SDK via file:../sdk (same repo) — build it first.
       - name: Build SDK
         working-directory: sdk
         run: |
           npm ci
           npm run build
-          npm link
 
-      # Build the React racing game against the linked SDK. base=/opencontrol/
-      # matches the project-pages subpath (https://<user>.github.io/opencontrol/).
-      - name: Build racing game
-        working-directory: game-racing
+      # The games are separate repositories deployed to their own Pages sites;
+      # the console references them in games.json. Only the shell ships here.
+      # vite base "./" makes the build work at any subpath.
+      - name: Build console shell
+        working-directory: console
         run: |
           npm ci
-          npm link @opencontrol/sdk
-          npm run build -- --base=/opencontrol/
+          npm run build
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: game-racing/dist
+          path: console/dist
 
   deploy:
     needs: build

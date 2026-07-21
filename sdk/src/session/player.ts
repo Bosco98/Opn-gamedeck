@@ -15,6 +15,7 @@ export class Player<E extends EventMap = EventMap> {
   status: PlayerStatus = "connected";
 
   private input = new Emitter<E>();
+  private anyInputListeners = new Set<(event: string, data: unknown) => void>();
   /** @internal */
   connection: NetworkConnection | null = null;
 
@@ -34,6 +35,16 @@ export class Player<E extends EventMap = EventMap> {
     this.input.off(event, listener);
   }
 
+  /**
+   * Subscribe to every input event from this player, untyped. For relays and
+   * generic tooling (e.g. a console forwarding input into a game) — games
+   * should prefer the typed `on`.
+   */
+  onAnyInput(listener: (event: string, data: unknown) => void): Unsubscribe {
+    this.anyInputListeners.add(listener);
+    return () => this.anyInputListeners.delete(listener);
+  }
+
   /** Vibrate the player's phone (where the browser supports it). */
   vibrate(pattern: number | number[] = 100): void {
     this.sendRaw({ t: "vibrate", pattern });
@@ -47,6 +58,7 @@ export class Player<E extends EventMap = EventMap> {
   /** @internal */
   handleInput(event: string, data: unknown): void {
     this.input.emit(event as keyof E, data as E[keyof E]);
+    for (const listener of [...this.anyInputListeners]) listener(event, data);
   }
 
   /** @internal */
@@ -59,6 +71,7 @@ export class Player<E extends EventMap = EventMap> {
   /** @internal */
   dispose(): void {
     this.input.clear();
+    this.anyInputListeners.clear();
     this.connection = null;
   }
 }

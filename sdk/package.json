@@ -1,7 +1,15 @@
 {
-  "name": "@opencontrol/sdk",
+  "name": "@bosco98/opencontrol-sdk",
   "version": "0.1.0",
   "description": "Turn any phone into a programmable controller for your web app. Sessions, controller profiles, device capabilities and networking — abstracted away.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bosco98/Opn-gamedeck.git",
+    "directory": "sdk"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",

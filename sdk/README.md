@@ -1,4 +1,4 @@
-# @opencontrol/sdk
+# @bosco98/opencontrol-sdk
 
 Turn any phone into a programmable controller for your web app.
 
@@ -9,7 +9,7 @@ you never see them.
 ## Install
 
 ```bash
-npm install @opencontrol/sdk     # ESM + full TypeScript types
+npm install @bosco98/opencontrol-sdk     # ESM + full TypeScript types
 ```
 
 or, with no build step at all:
@@ -23,7 +23,7 @@ Both builds come out of `npm run build` (`dist/index.js` + `dist/opencontrol.js`
 ## Host (the big screen)
 
 ```ts
-import { OpenControl } from "@opencontrol/sdk";
+import { OpenControl } from "@bosco98/opencontrol-sdk";
 
 const session = await OpenControl.host({ controller: "classic" });
 

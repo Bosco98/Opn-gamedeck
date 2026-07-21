@@ -2,3 +2,8 @@ node_modules/
 dist/
 *.log
 .DS_Store
+
+# The games live in their own repositories (nested checkouts, kept out of
+# this repo): github.com/Bosco98/game-platformer, github.com/Bosco98/game-racing
+game-platformer/
+game-racing/

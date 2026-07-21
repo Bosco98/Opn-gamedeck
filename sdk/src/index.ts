@@ -20,9 +20,11 @@
  */
 import { arcadeProfile } from "./profiles/arcade";
 import { classicProfile, type ClassicEvents } from "./profiles/classic";
+import { menuProfile } from "./profiles/menu";
 import { tiltProfile } from "./profiles/tilt";
 import { registerProfile } from "./profiles/registry";
 import { PeerJSAdapter } from "./networking/peerjs-adapter";
+import { ConsoleBridgeAdapter, isConsoleEmbedded } from "./networking/console-bridge";
 import {
   createHostSession,
   HostSession,
@@ -38,15 +40,20 @@ import type { EventMap } from "./types";
 registerProfile(classicProfile);
 registerProfile(arcadeProfile);
 registerProfile(tiltProfile);
+registerProfile(menuProfile);
 
 /**
  * Start hosting a session. Returns once the room is open and joinable.
- * Uses the PeerJS adapter unless `options.adapter` says otherwise.
+ * Uses the PeerJS adapter unless `options.adapter` says otherwise — or the
+ * console bridge when the page runs inside a console shell's iframe, so
+ * games plug into a console without any code changes.
  */
 export function host<E extends EventMap = ClassicEvents>(
   options: HostOptions,
 ): Promise<HostSession<E>> {
-  return createHostSession<E>({ ...options, adapter: options.adapter ?? new PeerJSAdapter() });
+  const adapter =
+    options.adapter ?? (isConsoleEmbedded() ? new ConsoleBridgeAdapter() : new PeerJSAdapter());
+  return createHostSession<E>({ ...options, adapter });
 }
 
 /**
@@ -78,6 +85,16 @@ export { PeerJSAdapter } from "./networking/peerjs-adapter";
 export type { PeerJSAdapterOptions } from "./networking/peerjs-adapter";
 export { MemoryAdapter, resetMemoryAdapter } from "./networking/memory-adapter";
 
+/* Console bridge */
+export {
+  ConsoleBridgeAdapter,
+  connectToBridgedGame,
+  isConsoleEmbedded,
+  withConsoleParam,
+  BRIDGE_VERSION,
+} from "./networking/console-bridge";
+export type { GameBridge, ConnectToBridgedGameOptions } from "./networking/console-bridge";
+
 /* Profiles */
 export { classicProfile } from "./profiles/classic";
 export type { ClassicEvents, ClassicButton } from "./profiles/classic";
@@ -85,6 +102,8 @@ export { arcadeProfile } from "./profiles/arcade";
 export type { ArcadeEvents, ArcadeButton } from "./profiles/arcade";
 export { tiltProfile } from "./profiles/tilt";
 export type { TiltEvents, TiltButton } from "./profiles/tilt";
+export { menuProfile } from "./profiles/menu";
+export type { MenuEvents, MenuDirection } from "./profiles/menu";
 export { registerProfile, getProfile } from "./profiles/registry";
 export type { ControllerProfile, RenderContext } from "./profiles/profile";
 
@@ -93,6 +112,8 @@ export { installLandscapeLock } from "./ui/landscape";
 
 /* Misc */
 export type { EventMap, PlayerStatus, JoinRejectReason } from "./types";
+export { parseMessage } from "./types";
+export type { ControllerMessage, HostMessage } from "./types";
 export {
   OpenControlError,
   RoomUnavailableError,
