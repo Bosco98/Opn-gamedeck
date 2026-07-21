@@ -1,6 +1,6 @@
 {
   "name": "@bosco98/opencontrol-sdk",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Turn any phone into a programmable controller for your web app. Sessions, controller profiles, device capabilities and networking — abstracted away.",
   "repository": {
     "type": "git",

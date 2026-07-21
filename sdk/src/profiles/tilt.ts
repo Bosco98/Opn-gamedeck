@@ -378,11 +378,16 @@ function renderTilt(container: HTMLElement, ctx: RenderContext<TiltEvents>): () 
   if (typeof requestPermission === "function") {
     overlay.hidden = false;
     const enable = container.querySelector<HTMLElement>('[data-oc="enable"]')!;
-    // Use pointerdown, not click: the container's touch-guards call
-    // preventDefault() on touchstart/touchend (installTouchGuards), which
-    // suppresses the synthetic click on iOS. pointerdown still fires and
-    // counts as the user activation requestPermission() requires.
-    enable.addEventListener("pointerdown", () => {
+    // requestPermission() must run during a user gesture, and iOS only counts
+    // click/touchend-time events — calling it from pointerdown/touchstart
+    // throws NotAllowedError. But the container's touch-guards preventDefault()
+    // touch events (installTouchGuards), which suppresses the synthetic click.
+    // So: keep this button's touch events away from the container guards so a
+    // real click fires, and request permission from that click.
+    for (const type of ["touchstart", "touchend"] as const) {
+      enable.addEventListener(type, (event) => event.stopPropagation(), { signal });
+    }
+    enable.addEventListener("click", () => {
       requestPermission()
         .then((state) => {
           if (state === "granted") {
