@@ -76,7 +76,7 @@ const CSS = `
 }
 .ocm-pad {
   position: relative;
-  width: clamp(150px, 38vmin, 280px);
+  width: calc(clamp(170px, 44vmin, 320px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   flex: none;
 }
@@ -114,7 +114,7 @@ const CSS = `
 }
 .ocm-face {
   position: relative;
-  width: clamp(150px, 38vmin, 280px);
+  width: calc(clamp(170px, 44vmin, 320px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   flex: none;
 }

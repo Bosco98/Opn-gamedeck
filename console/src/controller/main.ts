@@ -25,10 +25,14 @@ import "./controller.css";
 const MENU_PROFILE = "menu";
 const HOME_HOLD_MS = 1000;
 const NAME_KEY = "opn:name";
+const SCALE_KEY = "opn:ctrl-scale";
+const SCALE_MIN = 0.7;
+const SCALE_MAX = 1.5;
 
 main();
 
 function main(): void {
+  applyStoredScale();
   const root = document.createElement("div");
   root.id = "root";
   document.body.appendChild(root);
@@ -193,8 +197,14 @@ function renderChrome(overlay: HTMLElement, session: ControllerSession) {
   homeBtn.className = "home-btn hidden";
   homeBtn.innerHTML = `<span class="ring"></span>⌂`;
   homeBtn.style.setProperty("--held", "0");
-  overlay.append(crownBadge, homeBtn);
 
+  const settingsBtn = document.createElement("button");
+  settingsBtn.className = "settings-btn";
+  settingsBtn.setAttribute("aria-label", "Controller size");
+  settingsBtn.textContent = "⚙";
+  overlay.append(crownBadge, settingsBtn, homeBtn);
+
+  wireSettings(overlay, settingsBtn);
   wireHomeHold(homeBtn, () => session.sendInput(INPUT_HOME, {}));
 
   let toastTimer: ReturnType<typeof setTimeout> | null = null;
@@ -253,6 +263,69 @@ function wireHomeHold(button: HTMLElement, onHome: () => void): void {
       if (event.pointerId === pointer) release();
     });
   }
+}
+
+/* ------------------------------------------------------------------ */
+/* Controller size                                                     */
+/* ------------------------------------------------------------------ */
+
+function clampScale(value: number): number {
+  if (!Number.isFinite(value)) return 1;
+  return Math.min(SCALE_MAX, Math.max(SCALE_MIN, value));
+}
+
+function storedScale(): number {
+  return clampScale(parseFloat(localStorage.getItem(SCALE_KEY) ?? "1"));
+}
+
+/** Push the scale into a CSS var that the SDK profiles multiply their sizes by. */
+function applyScale(scale: number): void {
+  document.documentElement.style.setProperty("--oc-scale", String(scale));
+}
+
+function applyStoredScale(): void {
+  applyScale(storedScale());
+}
+
+/** Gear button + slider panel to resize the on-screen controls. */
+function wireSettings(overlay: HTMLElement, button: HTMLElement): void {
+  const panel = document.createElement("div");
+  panel.className = "settings-panel hidden";
+  panel.innerHTML = `
+    <label class="settings-label">Controller size <span class="settings-value"></span></label>
+    <input class="settings-slider" type="range"
+      min="${SCALE_MIN}" max="${SCALE_MAX}" step="0.05" />
+  `;
+  overlay.appendChild(panel);
+
+  const slider = panel.querySelector<HTMLInputElement>(".settings-slider")!;
+  const value = panel.querySelector<HTMLElement>(".settings-value")!;
+
+  const sync = (scale: number) => {
+    value.textContent = `${Math.round(scale * 100)}%`;
+  };
+  slider.value = String(storedScale());
+  sync(storedScale());
+
+  slider.addEventListener("input", () => {
+    const scale = clampScale(parseFloat(slider.value));
+    applyScale(scale);
+    localStorage.setItem(SCALE_KEY, String(scale));
+    sync(scale);
+    if (navigator.vibrate) navigator.vibrate(4);
+  });
+
+  button.addEventListener("pointerdown", (event) => {
+    event.stopPropagation(); // don't let the document dismiss handler see this tap
+    panel.classList.toggle("hidden");
+  });
+  // Tapping anywhere else — including the controls in the sibling profile
+  // mount — dismisses the panel so it never sits over the game.
+  document.addEventListener("pointerdown", (event) => {
+    if (panel.classList.contains("hidden")) return;
+    if (panel.contains(event.target as Node)) return;
+    panel.classList.add("hidden");
+  });
 }
 
 /** Keep the phone screen on while playing (best effort). */

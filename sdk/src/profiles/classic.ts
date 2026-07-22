@@ -76,7 +76,7 @@ const CSS = `
 }
 .ocx-dpad {
   position: relative;
-  width: clamp(150px, 38vmin, 280px);
+  width: calc(clamp(170px, 44vmin, 320px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   border-radius: 50%;
   background: rgba(255,255,255,.05);
@@ -108,7 +108,7 @@ const CSS = `
 }
 .ocx-face {
   position: relative;
-  width: clamp(150px, 38vmin, 280px);
+  width: calc(clamp(170px, 44vmin, 320px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   flex: none;
 }

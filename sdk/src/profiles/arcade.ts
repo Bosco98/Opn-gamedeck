@@ -76,7 +76,7 @@ const CSS = `
 }
 .oca-stick {
   position: relative;
-  width: clamp(150px, 40vmin, 300px);
+  width: calc(clamp(170px, 46vmin, 340px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   border-radius: 50%;
   background: rgba(255,255,255,.05);
@@ -114,7 +114,7 @@ const CSS = `
 }
 .oca-buttons { display: flex; gap: 14px; }
 .oca-btn {
-  width: clamp(52px, 12vmin, 80px);
+  width: calc(clamp(60px, 14vmin, 94px) * var(--oc-scale, 1));
   aspect-ratio: 1;
   border-radius: 50%;
   border: none;
@@ -136,8 +136,8 @@ const CSS = `
 .oca-btn-b { background: #4dd0e1; }
 .oca-triggers { display: flex; gap: 14px; }
 .oca-trigger {
-  width: clamp(84px, 19vmin, 150px);
-  height: clamp(110px, 26vmin, 200px);
+  width: calc(clamp(92px, 21vmin, 164px) * var(--oc-scale, 1));
+  height: calc(clamp(120px, 28vmin, 220px) * var(--oc-scale, 1));
   border: none;
   border-radius: 22px;
   padding: 0;

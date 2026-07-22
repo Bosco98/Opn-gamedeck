@@ -65,14 +65,80 @@ html, body {
 
 /* --- Connected: layers inside the landscape surface --- */
 .profile-mount { position: absolute; inset: 0; }
-.overlay { position: absolute; inset: 0; pointer-events: none; }
+.overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Suppress the iOS/Android long-press text-selection callout on the
+     chrome glyphs (Home ⌂, gear ⚙) — the profile container is guarded in
+     JS, but this overlay is not, so guard it in CSS. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
 
 .crown-badge {
   position: absolute;
   top: calc(6px + env(safe-area-inset-top));
-  left: 10px;
+  left: 52px;
   font-size: 16px;
   filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
+}
+
+.settings-btn {
+  position: absolute;
+  top: calc(6px + env(safe-area-inset-top));
+  left: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 11, 14, 0.65);
+  color: #cfd3dc;
+  font-size: 17px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  z-index: 6;
+}
+.settings-btn:active { filter: brightness(1.3); }
+
+.settings-panel {
+  position: absolute;
+  top: calc(46px + env(safe-area-inset-top));
+  left: 10px;
+  width: 210px;
+  padding: 14px 16px;
+  background: rgba(14, 16, 20, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: auto;
+  z-index: 7;
+}
+.settings-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #cfd3dc;
+  margin-bottom: 10px;
+}
+.settings-value { color: #7ee787; font-variant-numeric: tabular-nums; }
+.settings-slider {
+  width: 100%;
+  accent-color: #7ee787;
+  touch-action: none;
 }
 
 .home-btn {
@@ -91,6 +157,9 @@ html, body {
   justify-content: center;
   pointer-events: auto;
   touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   z-index: 5;
 }
